@@ -1,7 +1,7 @@
 {
   "name": "eslint-plugin-reactfc",
   "version": "0.1.0",
-  "description": "React 함수형 컴포넌트 내 hook/메서드/렌더링 순서 강제 ESLint 플러그인",
+  "description": "An ESLint plugin to enforce the order of hooks, methods, and rendering logic inside React functional components.",
   "main": "index.js",
   "keywords": [
     "eslint",
