@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+.env
+# 로그 파일
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# 테스트 커버리지
+coverage/
+# 기타
+.cursor/ 
