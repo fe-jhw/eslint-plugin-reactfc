@@ -8,7 +8,7 @@
 /**
  * @type {import('eslint').Rule.RuleModule}
  */
-module.exports = {
+const orderRule = {
   meta: {
     type: 'suggestion',
     docs: {
@@ -151,5 +151,11 @@ module.exports = {
         }
       }
     };
+  }
+};
+
+module.exports = {
+  rules: {
+    order: orderRule
   }
 }; 
