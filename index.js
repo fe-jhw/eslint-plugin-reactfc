@@ -18,7 +18,7 @@ const orderRule = {
     },
     schema: [],
     messages: {
-      order: 'The order of code blocks in this React functional component does not match the recommended convention. Please follow the specified order.'
+      order: "The '{{current}}' block is before a '{{shouldBeAfter}}' block. '{{current}}' should come after all '{{shouldBeAfter}}' blocks.\nExpected order: {{expectedOrder}}."
     }
   },
   create(context) {
@@ -32,6 +32,15 @@ const orderRule = {
       'conditional',   // 6. conditional rendering
       'return',        // 7. JSX return
     ];
+    const ORDER_LABELS = {
+      useState: 'useState',
+      customHook: 'custom hook',
+      variable: 'variable/computed value',
+      handler: 'handler/method',
+      useEffect: 'useEffect',
+      conditional: 'conditional rendering',
+      return: 'JSX return',
+    };
 
     // Node type classification function
     function getBlockType(node) {
@@ -110,14 +119,28 @@ const orderRule = {
         found.push({type, node: stmt});
       }
       let lastIdx = -1;
-      for (const {type, node: n} of found) {
+      for (let i = 0; i < found.length; i++) {
+        const {type, node: n} = found[i];
         const idx = ORDER.indexOf(type);
         if (idx === -1) continue;
         if (idx < lastIdx) {
-          context.report({
-            node: n,
-            messageId: 'order',
-          });
+          // Find the previous block that should be after this one
+          for (let j = i - 1; j >= 0; j--) {
+            const prevType = found[j].type;
+            const prevIdx = ORDER.indexOf(prevType);
+            if (prevIdx > idx) {
+              context.report({
+                node: n,
+                messageId: 'order',
+                data: {
+                  current: ORDER_LABELS[type],
+                  shouldBeAfter: ORDER_LABELS[prevType],
+                  expectedOrder: ORDER.map(k => ORDER_LABELS[k]).join(' → ')
+                }
+              });
+              break;
+            }
+          }
           break;
         }
         lastIdx = idx;
